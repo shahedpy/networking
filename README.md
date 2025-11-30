@@ -10,6 +10,7 @@
 - Fragmentation: splitting packets when necessary.
 
 ### IP versions
+
 - **Internet Protocol version 4 (IPv4):** currently used version of Internet Protocol.
 - **Internet Protocol version 6 (IPv6):** the upcoming replacement for IPv4. It contains some major improvements and new features.
 
@@ -22,5 +23,6 @@ An IPv4 address is a 32-bit number that identifies a network interface on the In
 - IP does not provide end-to-end message reliability or flow control; it performs best-effort delivery and does not guarantee packet delivery. Higher-layer protocols like TCP provide reliability and flow control.
 
 ### IP address types
+
 - **Public address:** An address assigned by an Internet Service Provider (ISP) and is globally routable and unique.
 - **Private address:** An address assigned to a device on a private TCP/IP local network (e.g., RFC 1918 ranges); these are not routable on the public Internet.
