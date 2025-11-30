@@ -11,4 +11,6 @@
  - Fragments (divides) packets where necessary
  - Addressing via 32 bit Internet addresses
 - However, it contains no functions for end-to-end message reliability or flow control. IP makes the 'best effort' to forward packets to the next destination, but does not guarantee delivery because it is connectionless.
-- 
+- The IP address can be classify into two classes:
+ - **Public address:** This address considered as any valid address assigned to any user, and the organization who is responsible for registering IP ranges called Internet Service Providers (ISPs), and this address will be unique.
+ - **Private Address:** Any number or address assigned to a device on a private TCP/IP Local Area Network that is accessible only within the Local Area Network.
