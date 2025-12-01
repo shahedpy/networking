@@ -91,7 +91,7 @@ This technique has been used to convert the private address to public address, t
 
 
 2. Port Address Translation (PAT).
-It's another technique used to convert the private address to public. During PAT, each computer on LAN is translated 10 the same [P addre.ss (public), but with a different port number assignment. This way is much better than the NAT because we can use one public address to translate any private address, therefore we saved the cost. The table below shows the process of the PAT
+It's another technique used to convert the private address to public. During PAT, each computer on LAN is translated 10 the same IP address (public), but with a different port number assignment. This way is much better than the NAT because we can use one public address to translate any private address, therefore we saved the cost. The table below shows the process of the PAT
 
 
 ### Classless Inter-Domain Routing (CIDR)
