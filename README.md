@@ -1,41 +1,96 @@
-
 # Networking
 
-An overview of the Internet Protocol (IP), addressing, and common strategies for conserving IPv4 address space.
+Comprehensive networking course materials organized by topic, following the course syllabus.
 
-## Table of contents
+## Table of Contents
 
-- [Internet Protocol (IP)](#internet-protocol-ip)
-- [IPv4 Basics](#ipv4-basics)
-- [Address Types](#address-types)
-- [IPv6](#ipv6)
-- [IP Address Structure](#ip-address-structure)
-- [Classes of IP Addresses](#classes-of-ip-addresses)
-- [Strategies to Conserve Addresses](#strategies-to-conserve-addresses)
-- [Internet number governance (IANA & RIRs)](#internet-number-governance-iana--rirs)
-- [ISP roles](#isp-roles)
-- [Classless Inter-Domain Routing (CIDR)](#classless-inter-domain-routing-cidr)
-- [Subnetting (Basic terminology & VLSM)](#subnetting-basic-terminology--vlsm)
-- [ARP — Address Resolution Protocol](#arp---address-resolution-protocol)
-- [Dynamic Host Configuration Protocol (DHCP)](#dynamic-host-configuration-protocol-dhcp)
-	- [Components of DHCP](#components-of-dhcp)
-	- [DHCP messages & lifecycle](#dhcp-messages--lifecycle)
+### 1. [IP Addressing & Address Management](addressing/README.md)
+- [Classless Addressing (CIDR)](addressing/classless-addressing.md)
+- [Network Address Translation (NAT)](addressing/nat.md)
+- [IANA & Regional Internet Registries](addressing/iana-rir.md)
+- [ISP Roles](addressing/isp-roles.md)
+- [IPv4 Address Anatomy](addressing/ipv4-anatomy.md)
+- [Subnet Mask](addressing/subnet-mask.md)
+- [Subnetting Basics](addressing/subnetting-basics.md)
+- [Variable Length Subnet Masking (VLSM)](addressing/vlsm.md)
 
-## Internet Protocol (IP)
+### 2. [Network Security](security/README.md)
+- [Asymmetric Key Cryptography](security/asymmetric-crypto.md)
+- [Public Key Cryptography (RSA)](security/rsa.md)
+- [RSA Practice Problems](security/rsa-problems.md)
+
+### 3. [Routing Protocols](routing/README.md)
+- [Routing Concepts](routing/concepts.md)
+- [Distance Vector Routing / RIP](routing/rip.md)
+- [Link-State Routing / OSPF](routing/ospf.md)
+- [Path-Vector Routing / BGP](routing/bgp.md)
+- [Hybrid Protocols / EIGRP](routing/eigrp.md)
+- [Routing Commands & CLI](routing/commands.md)
+
+### 4. [Network Protocols](protocols/README.md)
+- [Address Resolution Protocol (ARP)](protocols/arp.md)
+- [Reverse ARP (RARP)](protocols/rarp.md)
+- [Dynamic Host Configuration Protocol (DHCP)](protocols/dhcp.md)
+- [RTS/CTS Protocol](protocols/rts-cts.md)
+
+### 5. [Wireless Networking](wireless/README.md)
+- [Wireless Basics](wireless/basics.md)
+- [RTS/CTS Protocols](wireless/rts-cts.md)
+- [Wi-Fi Architecture](wireless/wifi.md)
+- [WiMAX Architecture](wireless/wimax.md)
+- [Mobile Networks](wireless/mobile-networks.md)
+
+### 6. [Course Materials (PDFs & Slides)](docs/pdfs/index.md)
+
+---
+
+---
+
+## Quick Reference
+
+### IP Addressing Fundamentals
+
+#### What is IP?
 
 The Internet Protocol is the cornerstone of the TCP/IP architecture. It is a connectionless, best-effort protocol used to deliver packets between hosts on different networks.
 
-### Main tasks of IP
+**Main tasks:**
+- Addressing — assigning unique addresses to hosts
+- Fragmentation — splitting packets when necessary to traverse smaller MTUs
 
-- Addressing — assigning unique addresses to hosts.
-- Fragmentation — splitting packets when necessary to traverse smaller MTUs.
+**IP versions:**
+- **IPv4** — 32-bit addresses (e.g., 192.168.1.1)
+- **IPv6** — 128-bit addresses (e.g., 2001:db8::1)
 
-### IP versions
+#### Private vs Public Addresses
 
-- **IPv4** — the widely deployed IP version (32-bit addresses).
-- **IPv6** — the successor to IPv4 (128-bit addresses) with improvements in address space and header design.
+- **Public** — globally routable, assigned by ISPs
+- **Private (RFC 1918)** — not routable on Internet
+  - 10.0.0.0/8
+  - 172.16.0.0/12
+  - 192.168.0.0/16
 
-## IPv4 basics
+→ **See [IP Addressing](addressing/README.md) for comprehensive coverage**
+
+---
+
+## Study by Topic
+
+Follow the syllabus order for structured learning:
+
+1. **Start with [Addressing](addressing/README.md)** — understand IP structure, CIDR, NAT, subnetting
+2. **Then [Security](security/README.md)** — learn cryptography fundamentals
+3. **Move to [Routing](routing/README.md)** — understand how packets find paths
+4. **Study [Protocols](protocols/README.md)** — ARP, DHCP, and address resolution
+5. **Finish with [Wireless](wireless/README.md)** — Wi-Fi, WiMAX, mobile networks
+
+---
+
+## Legacy Content (For Reference)
+
+The sections below provide quick reference material. For comprehensive study, use the organized folders above.
+
+### IPv4 Quick Reference
 
 An IPv4 address is a 32-bit number that identifies a network interface (for example, a computer or a router).
 
@@ -373,4 +428,10 @@ Internet Service Providers (ISPs) play several important roles in the IP address
 - Core services — ISPs often provide DNS resolvers, DHCP servers, and other gateway services for customers, and help with IPv6 migration.
 
 These roles make ISPs a critical point of contact for both address allocation and operational support on the public Internet.
+
+## Routing Protocols
+
+This README includes a short summary of routing concepts, but for more detail please see `routing/README.md`.
+The routing folder contains dedicated pages for DVR/RIP, Link-State/OSPF, Path-Vector/BGP, Hybrid protocols (EIGRP), concepts, and a CLI commands cheatsheet — and the course PDFs are listed in `docs/pdfs/index.md`.
+
 
