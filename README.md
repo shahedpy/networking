@@ -16,6 +16,10 @@ An overview of the Internet Protocol (IP), addressing, and common strategies for
 - [ISP roles](#isp-roles)
 - [Classless Inter-Domain Routing (CIDR)](#classless-inter-domain-routing-cidr)
 - [Subnetting (Basic terminology & VLSM)](#subnetting-basic-terminology--vlsm)
+- [ARP — Address Resolution Protocol](#arp---address-resolution-protocol)
+- [Dynamic Host Configuration Protocol (DHCP)](#dynamic-host-configuration-protocol-dhcp)
+	- [Components of DHCP](#components-of-dhcp)
+	- [DHCP messages & lifecycle](#dhcp-messages--lifecycle)
 
 ## Internet Protocol (IP)
 
@@ -60,6 +64,162 @@ Each IP address typically consists of two logical parts:
 - **Host portion:** identifies the host/interface within that network.
 
 IPv4 addresses are commonly written as four decimal octets (0–255), e.g. `192.0.2.1`.
+
+## ARP — Address Resolution Protocol
+
+ARP (Address Resolution Protocol) is a network protocol used to determine the MAC address (hardware address) corresponding to an IP address. When one device in a LAN (Local Area Network) wants to communicate with another, it must know the destination’s MAC address. Since users and applications work with IP addresses, ARP acts as the translator, converting IP addresses into MAC addresses.
+
+Note: ARP operates at the Network Layer (Layer 3) but interacts closely with the Data Link Layer (Layer 2).
+
+### Important ARP Terms
+- **ARP Cache:** A table where resolved MAC addresses are stored for quick future use.
+- **ARP Cache Timeout:** The duration for which an entry remains valid in the ARP cache before it expires and may be refreshed.
+- **ARP Request:** A broadcast message asking, "Who has this IP address?" so the requester can learn the destination MAC.
+- **ARP Reply/Response:** A unicast message containing the MAC address of the requested IP, sent back to the original requester.
+
+### Types of ARP
+1. **Proxy ARP** — A proxy device (usually a router) replies to ARP requests on behalf of another host. This can be used to hide network topology or help connect different subnets.
+2. **Gratuitous ARP** — A host broadcasts an ARP request (or unsolicited ARP reply) for its own IP. It is commonly used to detect duplicate IPs and to refresh other hosts' ARP caches.
+3. **Reverse ARP (RARP)** — Historically used by devices that only know their MAC address to discover their IP address (for example, diskless machines at boot). Mostly replaced by DHCP.
+4. **Inverse ARP (InARP)** — Opposite of standard ARP: used by a device with a known Layer 2 address (MAC) to discover the corresponding IP address; commonly used in older technologies like Frame Relay and ATM.
+
+### How ARP works (basic)
+The following steps are involved:
+1. **Sender checks ARP Cache:** If the MAC address for the destination IP is already cached, communication starts immediately.
+2. **ARP Request Broadcast:** If not cached, the sender broadcasts an ARP request on the LAN: "Who has <IP>? Tell <sender IP>."
+3. **All Devices Receive Request:** Every device on the local segment receives the request and checks whether the requested IP matches its own.
+4. **Destination Replies:** The device whose IP matches sends an ARP reply (unicast) containing its MAC address.
+5. **Cache Update:** The sender updates its ARP cache with the new IP → MAC mapping for future use.
+
+### ARP cache / ARP table
+- Hosts maintain an ARP cache (table) with IP-to-MAC mappings to avoid repeating requests for every packet. Entries have a timeout and may be refreshed on demand.
+- You can view the ARP table on many systems (e.g., `arp -a` on macOS/Linux/Windows) and flush it with system-dependent commands.
+
+### Variants and related protocols
+- **Gratuitous ARP** — a host broadcasts an ARP notification for its own IP (used for duplicate IP detection or to update other hosts' caches).
+- **Proxy ARP** — a router or device answers ARP requests on behalf of another host (useful for certain bridging or NAT scenarios).
+- **Reverse ARP (RARP)** — historical protocol used by diskless clients to discover their IP from a MAC (largely obsolete; replaced by DHCP).
+
+### Security and issues
+- ARP is unauthenticated, which makes it vulnerable to ARP spoofing/poisoning attacks where an attacker sends fake ARP replies to intercept or disrupt traffic.
+- Mitigations include using static ARP entries (where feasible), DHCP + dynamic security features, or network switch protections like Dynamic ARP Inspection (DAI) on managed switches.
+
+### Common commands
+- macOS/Linux: `arp -a` — list ARP table, `ip neigh` (Linux) — show neighbor table, `sudo ip -s -s neigh flush all` — clear the neighbor table.
+- Windows: `arp -a` — list ARP table, `arp -d <ip>` — delete entry, `arp -v`/`Get-NetNeighbor` (PowerShell) on modern systems.
+
+### Summary
+ARP is a fundamental local network protocol that maps IP addresses to MAC addresses to allow Ethernet frames to reach the correct host on a LAN. Because it sits at the boundary between Layer 2 and Layer 3, it is widely used in IP-over-Ethernet networks for local delivery of packets.
+
+### ARP Message Format 🔧
+
+An ARP message consists of several fields:
+
+- **Hardware Type (2 bytes):** Defines hardware (Ethernet = 1).
+- **Protocol Type (2 bytes):** Defines protocol (IPv4 = 0x0800).
+- **Hardware Address Length (1 byte):** Length of MAC address (6 for Ethernet).
+- **Protocol Address Length (1 byte):** Length of IP address (4 for IPv4).
+- **Operation Code (2 bytes):** 1 for request, 2 for reply.
+- **Sender Hardware Address:** MAC of the sender.
+- **Sender Protocol Address:** IP of the sender.
+- **Target Hardware Address:** Empty in request; receiver’s MAC in reply.
+- **Target Protocol Address:** Receiver’s IP.
+
+### Advantages of the ARP Protocol ✅
+
+- **Automatic Mapping:** No need for manual configuration to resolve MAC addresses.
+- **Efficiency:** Ensures smooth communication within LANs by allowing devices to dynamically discover MAC addresses.
+- **Transparency:** Works in the background without user intervention.
+- **Flexibility:** Supports different types (Proxy, Gratuitous, Reverse, Inverse) for varied networking needs.
+
+### RARP — Reverse Address Resolution Protocol 🔄
+
+Reverse Address Resolution Protocol (RARP) is a network protocol that allows a device to discover its IP address when only its MAC (Media Access Control) address is known. Typical uses and components include:
+
+- **IP Address Assignment:** Normally, a machine stores its IP address in a configuration file. Diskless systems cannot do this and rely on RARP or other mechanisms (historically RARP was used) for IP assignment.
+- **Physical Address:** Every network device has a unique MAC address stored in its Network Interface Card (NIC).
+- **RARP Request:** A device broadcasts a request containing its MAC address to ask for the corresponding IP address.
+- **RARP Server:** The server maintains a mapping of MAC addresses to IP addresses and, on receiving a request, replies with the appropriate IP address.
+
+Note: RARP has largely been superseded by DHCP (Dynamic Host Configuration Protocol), which provides more features (e.g., default gateway, DNS), but the historical role of RARP in diskless boot scenarios is still useful to understand.
+
+### How it works
+When a machine doesn't have the memory to store its IP address, such as diskless machines or newly configured systems, it uses RARP to request an IP address.
+
+- **RARP Request:** A client broadcasts a RARP request containing its MAC address.
+- **Server Lookup:** A RARP server (or gateway/router with an ARP/RARP table) checks its mapping of MAC -> IP.
+- **RARP Reply:** If a match is found, the server responds with the client’s IP address.
+- **Client Configuration:** The client configures itself with the provided IP and can now communicate on the network.
+
+### RARP Packet Format & Encapsulation 🔧
+RARP uses the same packet format as ARP (same fields and lengths) but uses a distinct EtherType to distinguish RARP frames. In Ethernet the RARP EtherType is `0x8035` (ARP uses `0x0806`). The ARP/RARP message contains fields such as hardware type, protocol type, hardware address length, protocol address length, operation code (indicating ARP vs RARP and request vs reply), sender hardware address, sender protocol address, target hardware address, and target protocol address. RARP requests typically include the client's MAC address and a zero or placeholder IP, and a server fills in the appropriate IP on reply.
+## Dynamic Host Configuration Protocol (DHCP)
+
+Dynamic Host Configuration Protocol (DHCP) is a network protocol used to automate the process of assigning IP addresses and other network configuration parameters to devices such as computers, smartphones and printers. Instead of manually configuring each device, DHCP enables devices to join a network and automatically receive:
+
+- **IP Address**
+- **Subnet Mask**
+- **Default Gateway**
+- **DNS Server addresses**
+- **Other TCP/IP configuration options**
+
+### How DHCP works (DORA)
+DHCP commonly follows a four-step process often called DORA:
+
+1. **Discover:** A client broadcasts a DHCPDISCOVER message to locate available DHCP servers.
+2. **Offer:** A DHCP server responds with a DHCPOFFER listing an available IP and other network settings.
+3. **Request:** The client broadcasts a DHCPREQUEST to accept an offer from a server (or to renew/confirm a lease).
+4. **Acknowledge:** The DHCP server sends a DHCPACK to confirm the assignment and lease parameters.
+
+DHCP replaced RARP for most cases because it provides richer configuration capabilities (gateway, DNS, lease time, options) beyond just assigning an IP address.
+
+### Components of DHCP
+
+- **DHCP Server:** Stores IP addresses and configuration details. Allocates addresses dynamically or can provide static reservations for clients.
+- **DHCP Relay (Agent):** Forwards DHCP messages between clients and servers when they are not on the same subnet (often implemented as `ip helper` or DHCP relay on routers).
+- **DHCP Client:** Any device (PC, phone, printer, IoT device, etc.) requesting an IP address and configuration from a DHCP server.
+- **IP Address Pool (Scope):** A predefined range of IP addresses the server can lease to clients. Administrators often configure excluded addresses for network devices.
+- **Subnets/Scopes:** DHCP servers commonly maintain separate pools (scopes) per subnet so clients get addresses appropriate to their network.
+- **Lease:** The duration the IP is assigned to the client. During the lease lifetime clients must renew; otherwise the address returns to the pool on expiry.
+- **DNS Servers:** DHCP can provide DNS server address(es) to clients so they can resolve domain names.
+- **Default Gateway (Router):** DHCP provides the router IP (default gateway) so clients can communicate outside their local subnet.
+- **Options:** Additional DHCP options (e.g., subnet mask, domain name, NTP servers, WINS) which extend the configuration the server provides.
+
+### DHCP messages & lifecycle
+
+DHCP operates on the Application Layer and uses UDP ports 67 (server) and 68 (client). It follows a client-server model and often begins with the DORA exchange, but DHCP defines several message types and extensions that cover the full lease lifecycle and other behaviors:
+
+1. **DHCPDISCOVER (Discover):**
+	- Sent by a client to the broadcast address 255.255.255.255 (source IP 0.0.0.0) to discover DHCP servers on the local network.
+	- May include requests for options like subnet mask, domain name, DNS, etc.
+
+2. **DHCPOFFER (Offer):**
+	- A server replies with an offer of an IP address and configuration parameters.
+	- If multiple servers respond, the client generally accepts the first offer it receives; servers include a server identifier so they can be distinguished.
+
+3. **DHCPREQUEST (Request):**
+	- The client responds with a DHCPREQUEST to accept an offer and indicate the selected server.
+	- This message may also be used for lease renewals; when renewing, the client unicasts to the known DHCP server (ports may be server 67), and the server can reply directly.
+	- After a DHCPREQUEST is broadcast, other DHCP servers that had offered an IP will return the offered addresses to their pool.
+
+4. **DHCPACK (Acknowledge):**
+	- The server acknowledges the lease and supplies final lease parameters. The client may now use the IP and provided settings until the next renewal or expiry.
+
+5. **DHCPREQUEST / DHCPACK (Renewal & Rebinding):**
+	- When a lease reaches 50% of its duration, the client attempts a renewal by sending DHCPREQUEST directly to the leasing server. If the lease owner responds with DHCPACK the lease is renewed.
+	- If the server does not respond, the client may try broadcast renewal (rebinding) near expiry; if no server responds before expiry, the client must restart the DORA process.
+
+6. **DHCPRELEASE (Release):**
+	- The client may voluntarily end the lease early by sending a DHCPRELEASE; the server then returns the address to the available pool.
+
+Other messages and notes:
+- **DHCPNAK:** Sent by the server to indicate the requested lease or renewal is denied (e.g., the address is no longer valid), prompting the client to restart discovery.
+- **DHCPINFORM:** A client already has an IP (e.g., statically assigned) and requests additional configuration parameters from a DHCP server.
+- **DHCP Options:** DHCP uses options to communicate extra information (e.g., option 1: subnet mask, option 3: router/default gateway, option 6: DNS servers, option 51: lease time, option 54: server identifier).
+- **DHCP Relay Behavior:** When clients and servers are on different networks, routers are configured to forward broadcasts (DHCPDISCOVER) to DHCP servers as unicast to a server; replies are forwarded to clients accordingly.
+
+Keep in mind DHCP may also be integrated with DNS dynamic updates, address reservations (static mappings by MAC), and access control mechanisms in enterprise environments.
+
 
 ## Classes of IP addresses (historical)
 
