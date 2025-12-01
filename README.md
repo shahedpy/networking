@@ -12,6 +12,8 @@ An overview of the Internet Protocol (IP), addressing, and common strategies for
 - [IP Address Structure](#ip-address-structure)
 - [Classes of IP Addresses](#classes-of-ip-addresses)
 - [Strategies to Conserve Addresses](#strategies-to-conserve-addresses)
+- [Internet number governance (IANA & RIRs)](#internet-number-governance-iana--rirs)
+- [ISP roles](#isp-roles)
 - [Classless Inter-Domain Routing (CIDR)](#classless-inter-domain-routing-cidr)
 
 ## Internet Protocol (IP)
@@ -122,4 +124,25 @@ Subnet mask and CIDR examples (common Class C-style subnets):
 | `11110000`   | 240     | `/28`|
 | `11111000`   | 248     | `/29`|
 | `11111100`   | 252     | `/30`|
+
+## Internet number governance (IANA & RIRs)
+
+The Internet Assigned Numbers Authority (IANA) manages global coordination for the assignment of IP address blocks, autonomous system (AS) numbers, and other protocol parameters.
+
+- IANA allocates large blocks of addresses and ASNs to Regional Internet Registries (RIRs) such as ARIN, RIPE NCC, APNIC, AFRINIC, and LACNIC.
+- RIRs allocate smaller blocks to Internet Service Providers (ISPs) and sometimes directly to large organizations.
+- This hierarchical model ensures global uniqueness and coordinated routing of Internet address space.
+
+See: https://www.iana.org and the RIRs' websites for regional policies and allocations.
+
+## ISP roles
+
+Internet Service Providers (ISPs) play several important roles in the IP addressing ecosystem and in general Internet connectivity:
+
+- Allocation and assignment — ISPs receive address blocks from RIRs and assign public addresses to customers (either dynamically via DHCP or as static assignments).
+- Routing and peering — ISPs announce IP prefixes via routing protocols (e.g., BGP) and establish peering or transit agreements to exchange traffic.
+- NAT and address conservation — Many ISPs use NAT/PAT at customer premises or within their networks to conserve public address space.
+- Core services — ISPs often provide DNS resolvers, DHCP servers, and other gateway services for customers, and help with IPv6 migration.
+
+These roles make ISPs a critical point of contact for both address allocation and operational support on the public Internet.
 
