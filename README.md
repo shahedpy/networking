@@ -50,26 +50,6 @@ Comprehensive networking course materials organized by topic, following the cour
 
 ### IP Addressing Fundamentals
 
-#### What is IP?
-
-The Internet Protocol is the cornerstone of the TCP/IP architecture. It is a connectionless, best-effort protocol used to deliver packets between hosts on different networks.
-
-**Main tasks:**
-- Addressing — assigning unique addresses to hosts
-- Fragmentation — splitting packets when necessary to traverse smaller MTUs
-
-**IP versions:**
-- **IPv4** — 32-bit addresses (e.g., 192.168.1.1)
-- **IPv6** — 128-bit addresses (e.g., 2001:db8::1)
-
-#### Private vs Public Addresses
-
-- **Public** — globally routable, assigned by ISPs
-- **Private (RFC 1918)** — not routable on Internet
-  - 10.0.0.0/8
-  - 172.16.0.0/12
-  - 192.168.0.0/16
-
 → **See [IP Addressing](addressing/README.md) for comprehensive coverage**
 
 ---
